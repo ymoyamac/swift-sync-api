@@ -3,6 +3,7 @@ package mx.com.aey.user.domain.entity;
 import lombok.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -10,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class User {
-    private String userId;
+    private UUID userId;
     private String firstName;
     private String lastName;
     private String email;

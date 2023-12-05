@@ -1,57 +1,51 @@
-package mx.com.aey.user.domain.dto;
+package mx.com.aey.user.infrastructure.persistence.model;
 
 import java.util.Date;
-import jakarta.validation.constraints.Email;
+import java.util.UUID;
+
+import jakarta.persistence.*;
 
 import lombok.*;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
-import mx.com.aey.user.domain.model.UserJpa;
+import mx.com.aey.user.domain.entity.User;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
 @Setter
-@Schema(name = "UpdateUser")
-public class UpdateUserDto {
-    @JsonProperty
-    @Schema(readOnly = true)
-    private String userId;
+@Entity
+@Table(name = "tusr01_users")
+public class UserJpa {
 
-    @JsonProperty
-    @Schema(readOnly = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id")
+    private UUID userId;
+
+    @Column(name = "u_first_name")
     private String firstName;
 
-    @JsonProperty
-    @Schema(readOnly = true)
+    @Column(name = "u_last_name")
     private String lastName;
 
-    @JsonProperty
-    @Schema(readOnly = true)
-    @Email
+    @Column(name = "u_email")
     private String email;
 
-    @JsonProperty
-    @Schema(readOnly = true)
-    @Email
+    @Column(name = "u_backup_email")
     private String backupEmail;
 
-    @JsonProperty
-    @Schema(readOnly = true)
+    @Column(name = "u_password")
     private String password;
 
-    @JsonProperty
-    @Schema(readOnly = true)
+    @Column(name = "u_phone_number")
     private String phoneNumber;
 
-    @JsonProperty
-    @Schema(readOnly = true)
+    @Column(name = "u_birthdate")
     private Date birthdate;
 
-    public static UpdateUserDto fromEntity(UserJpa entity) {
-        return UpdateUserDto.builder()
+    public static UserJpa fromEntity(UserJpa entity) {
+        return UserJpa.builder()
+                .userId(entity.getUserId())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .email(entity.getEmail())
@@ -62,8 +56,8 @@ public class UpdateUserDto {
                 .build();
     }
 
-    public UpdateUserDto toEntity() {
-        return UpdateUserDto.builder()
+    public User toEntity() {
+        return User.builder()
                 .userId(userId)
                 .firstName(firstName)
                 .lastName(lastName)
@@ -75,3 +69,4 @@ public class UpdateUserDto {
                 .build();
     }
 }
+
