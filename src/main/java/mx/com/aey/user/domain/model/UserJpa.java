@@ -1,9 +1,9 @@
 package mx.com.aey.user.domain.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.Date;
+import jakarta.persistence.*;
+
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
