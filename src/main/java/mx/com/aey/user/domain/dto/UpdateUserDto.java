@@ -49,6 +49,7 @@ public class UpdateUserDto {
     @JsonProperty
     @Schema(readOnly = true)
     private Date birthdate;
+
     public static UpdateUserDto fromEntity(UserJpa entity) {
         return UpdateUserDto.builder()
                 .firstName(entity.getFirstName())
@@ -58,6 +59,19 @@ public class UpdateUserDto {
                 .password(entity.getPassword())
                 .phoneNumber(entity.getPhoneNumber())
                 .birthdate(entity.getBirthdate())
+                .build();
+    }
+
+    public UpdateUserDto toEntity() {
+        return UpdateUserDto.builder()
+                .userId(userId)
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .backupEmail(backupEmail)
+                .password(password)
+                .phoneNumber(phoneNumber)
+                .birthdate(birthdate)
                 .build();
     }
 }

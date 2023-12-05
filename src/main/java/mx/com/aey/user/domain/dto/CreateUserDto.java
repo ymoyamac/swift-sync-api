@@ -77,4 +77,16 @@ public class CreateUserDto {
                 .birthdate(entity.getBirthdate())
                 .build();
     }
+
+    public CreateUserDto toEntity() {
+        return CreateUserDto.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .backupEmail(backupEmail)
+                .password(password)
+                .phoneNumber(phoneNumber)
+                .birthdate(birthdate)
+                .build();
+    }
 }
