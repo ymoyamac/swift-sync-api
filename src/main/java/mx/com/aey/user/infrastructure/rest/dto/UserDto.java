@@ -1,41 +1,38 @@
-package mx.com.aey.user.domain.dto;
+package mx.com.aey.user.infrastructure.rest.dto;
 
 import java.util.Date;
-import jakarta.validation.constraints.*;
+import java.util.UUID;
+
+import jakarta.validation.constraints.Email;
 
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import mx.com.aey.user.domain.entity.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import mx.com.aey.user.domain.model.UserJpa;
+import mx.com.aey.user.infrastructure.persistence.model.UserJpa;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
 @Setter
-@Schema(name = "CreateUser")
-public class CreateUserDto {
+@Schema(name = "UpdateUser")
+public class UserDto {
+    @JsonProperty
+    @Schema(readOnly = true)
+    private UUID userId;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private String firstName;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private String lastName;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     @Email
     private String email;
 
@@ -46,28 +43,18 @@ public class CreateUserDto {
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private String password;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Size(min=10, max=10)
     private String phoneNumber;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private Date birthdate;
 
-    public static CreateUserDto fromEntity(UserJpa entity) {
-        return CreateUserDto.builder()
+    public static UserDto fromEntity(User entity) {
+        return UserDto.builder()
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .email(entity.getEmail())
@@ -78,8 +65,9 @@ public class CreateUserDto {
                 .build();
     }
 
-    public CreateUserDto toEntity() {
-        return CreateUserDto.builder()
+    public UserDto toEntity() {
+        return UserDto.builder()
+                .userId(userId)
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
