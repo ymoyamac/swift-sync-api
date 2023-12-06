@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 import mx.com.aey.user.domain.entity.User;
+import org.hibernate.annotations.Type;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +19,7 @@ import mx.com.aey.user.domain.entity.User;
 public class UserJpa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private UUID userId;
 
