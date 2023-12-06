@@ -18,7 +18,7 @@ import mx.com.aey.user.domain.entity.User;
 public class UserJpa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private UUID userId;
 
