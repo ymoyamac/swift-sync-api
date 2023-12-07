@@ -18,6 +18,7 @@ public class UserBs implements UserService {
 
     @Override
     public Either<ErrorCode, User> getUserById(UUID userId) {
+        System.out.println("Esto se usa " + "UserBs");
         return this.userRepository.findById(userId)
                 .<Either<ErrorCode, User>>map(Either::right)
                 .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));

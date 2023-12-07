@@ -53,6 +53,7 @@ public class UserDto {
 
     public static UserDto fromEntity(User entity) {
         return UserDto.builder()
+                .userId(entity.getUserId())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .email(entity.getEmail())
