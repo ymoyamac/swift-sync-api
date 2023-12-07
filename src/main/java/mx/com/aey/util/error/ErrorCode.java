@@ -4,12 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    NOT_FOUND("Resource not found", 404),;
+    NOT_FOUND(404, "Resource not found"),;
 
     private final String description;
-    private final Integer code;
-    ErrorCode(String description, Integer code) {
+    private final Integer statusCode;
+    ErrorCode(Integer statusCode, String description) {
         this.description = description;
-        this.code = code;
+        this.statusCode = statusCode;
     }
 }

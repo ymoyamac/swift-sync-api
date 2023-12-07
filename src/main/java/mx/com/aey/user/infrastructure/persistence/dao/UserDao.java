@@ -16,6 +16,7 @@ public class UserDao implements UserRepository {
     @Inject
     UserJpaRepository userJpaRepository;
     public Optional<User> findById(UUID userId) {
+        System.out.println("Esto se usa " + "UserDao");
         return userJpaRepository.findById(userId)
                 .map(UserJpa::toEntity);
     }
