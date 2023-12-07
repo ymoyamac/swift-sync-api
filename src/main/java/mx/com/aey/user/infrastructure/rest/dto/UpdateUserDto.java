@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-@Schema(name = "User")
+@Schema(name = "UpdateUser")
 public class UpdateUserDto {
     @JsonProperty
     @Schema(readOnly = true)
