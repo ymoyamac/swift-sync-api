@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface UserService {
     Either<ErrorCode, User> getUserById(UUID userId);
+    Either<ErrorCode, User> create(User user);
+
 }

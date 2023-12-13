@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import mx.com.aey.user.domain.entity.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import mx.com.aey.user.infrastructure.persistence.model.UserJpa;
@@ -78,8 +79,8 @@ public class CreateUserDto {
                 .build();
     }
 
-    public CreateUserDto toEntity() {
-        return CreateUserDto.builder()
+    public User toEntity() {
+        return User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)

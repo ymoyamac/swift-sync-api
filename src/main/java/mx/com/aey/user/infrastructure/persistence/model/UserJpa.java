@@ -20,8 +20,7 @@ public class UserJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    @Column(name = "user_id", columnDefinition = "uuid")
+    @Column(name = "user_id")
     private UUID userId;
 
     @Column(name = "u_first_name")
@@ -45,7 +44,7 @@ public class UserJpa {
     @Column(name = "u_birthdate")
     private Date birthdate;
 
-    public static UserJpa fromEntity(UserJpa entity) {
+    public static UserJpa fromEntity(User entity) {
         return UserJpa.builder()
                 .userId(entity.getUserId())
                 .firstName(entity.getFirstName())

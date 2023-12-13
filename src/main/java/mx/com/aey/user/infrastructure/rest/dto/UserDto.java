@@ -1,14 +1,12 @@
 package mx.com.aey.user.infrastructure.rest.dto;
 
-import java.util.Date;
-import java.util.UUID;
-
-import jakarta.validation.constraints.Email;
-
-import lombok.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import mx.com.aey.user.domain.entity.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,20 +15,26 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @Setter
 @Schema(name = "User")
 public class UserDto {
-    @JsonProperty
-    @Schema(readOnly = true)
-    private UUID userId;
 
     @JsonProperty
     @Schema(readOnly = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
     private String firstName;
 
     @JsonProperty
     @Schema(readOnly = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
     private String lastName;
 
     @JsonProperty
     @Schema(readOnly = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
     @Email
     private String email;
 
@@ -41,19 +45,28 @@ public class UserDto {
 
     @JsonProperty
     @Schema(readOnly = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
     private String password;
 
     @JsonProperty
     @Schema(readOnly = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Size(min=10, max=10)
     private String phoneNumber;
 
     @JsonProperty
     @Schema(readOnly = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
     private Date birthdate;
 
     public static UserDto fromEntity(User entity) {
         return UserDto.builder()
-                .userId(entity.getUserId())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .email(entity.getEmail())
@@ -64,9 +77,8 @@ public class UserDto {
                 .build();
     }
 
-    public UserDto toEntity() {
-        return UserDto.builder()
-                .userId(userId)
+    public User toEntity() {
+        return User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
@@ -76,4 +88,5 @@ public class UserDto {
                 .birthdate(birthdate)
                 .build();
     }
+
 }
