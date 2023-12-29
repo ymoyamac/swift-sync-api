@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 
 import lombok.*;
 import mx.com.aey.user.domain.entity.User;
-import org.hibernate.annotations.GenericGenerator;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +43,9 @@ public class UserJpa {
     @Column(name = "u_birthdate")
     private Date birthdate;
 
+    @Column(name = "u_is_active", columnDefinition = "boolean default true")
+    private Boolean isActive = Boolean.TRUE;
+
     public static UserJpa fromEntity(User entity) {
         return UserJpa.builder()
                 .userId(entity.getUserId())
@@ -54,6 +56,7 @@ public class UserJpa {
                 .password(entity.getPassword())
                 .phoneNumber(entity.getPhoneNumber())
                 .birthdate(entity.getBirthdate())
+                .isActive(entity.getIsActive())
                 .build();
     }
 
@@ -67,6 +70,7 @@ public class UserJpa {
                 .password(password)
                 .phoneNumber(phoneNumber)
                 .birthdate(birthdate)
+                .isActive(isActive)
                 .build();
     }
 }

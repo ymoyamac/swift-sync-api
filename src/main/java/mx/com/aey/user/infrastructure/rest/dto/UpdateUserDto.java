@@ -16,9 +16,6 @@ import java.util.UUID;
 @Setter
 @Schema(name = "UpdateUser")
 public class UpdateUserDto {
-    @JsonProperty
-    @Schema(readOnly = true)
-    private UUID userId;
 
     @JsonProperty
     @Schema(readOnly = true)

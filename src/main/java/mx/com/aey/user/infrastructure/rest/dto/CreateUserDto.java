@@ -58,6 +58,7 @@ public class CreateUserDto {
     @NotBlank
     @NotEmpty
     @Size(min=10, max=10)
+    @Positive
     private String phoneNumber;
 
     @JsonProperty
@@ -67,17 +68,12 @@ public class CreateUserDto {
     @NotEmpty
     private Date birthdate;
 
-    public static CreateUserDto fromEntity(UserJpa entity) {
-        return CreateUserDto.builder()
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
-                .email(entity.getEmail())
-                .backupEmail(entity.getBackupEmail())
-                .password(entity.getPassword())
-                .phoneNumber(entity.getPhoneNumber())
-                .birthdate(entity.getBirthdate())
-                .build();
-    }
+    @JsonProperty
+    @Schema(readOnly = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private Boolean isActive = Boolean.TRUE;
 
     public User toEntity() {
         return User.builder()
@@ -88,6 +84,7 @@ public class CreateUserDto {
                 .password(password)
                 .phoneNumber(phoneNumber)
                 .birthdate(birthdate)
+                .isActive(isActive)
                 .build();
     }
 }
