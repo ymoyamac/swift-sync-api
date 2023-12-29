@@ -7,6 +7,7 @@ import mx.com.aey.user.domain.entity.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,55 +19,44 @@ public class UserDto {
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
+    private UUID userId;
+
+    @JsonProperty
+    @Schema(readOnly = true)
     private String firstName;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private String lastName;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Email
     private String email;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @Email
     private String backupEmail;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private String password;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     @Size(min=10, max=10)
     private String phoneNumber;
 
     @JsonProperty
     @Schema(readOnly = true)
-    @NotNull
-    @NotBlank
-    @NotEmpty
     private Date birthdate;
+
+    @JsonProperty
+    @Schema(readOnly = true)
+    private Boolean isActive;
 
     public static UserDto fromEntity(User entity) {
         return UserDto.builder()
+                .userId(entity.getUserId())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .email(entity.getEmail())
@@ -74,18 +64,7 @@ public class UserDto {
                 .password(entity.getPassword())
                 .phoneNumber(entity.getPhoneNumber())
                 .birthdate(entity.getBirthdate())
-                .build();
-    }
-
-    public User toEntity() {
-        return User.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .backupEmail(backupEmail)
-                .password(password)
-                .phoneNumber(phoneNumber)
-                .birthdate(birthdate)
+                .isActive(entity.getIsActive())
                 .build();
     }
 

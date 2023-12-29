@@ -19,29 +19,5 @@ public class User {
     private String password;
     private String phoneNumber;
     private Date birthdate;
-
-    public static User fromEntity(User entity) {
-        return User.builder()
-                .userId(entity.getUserId())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
-                .email(entity.getEmail())
-                .backupEmail(entity.getBackupEmail())
-                .password(entity.getPassword())
-                .phoneNumber(entity.getPhoneNumber())
-                .birthdate(entity.getBirthdate())
-                .build();
-    }
-
-    public User toEntity() {
-        return User.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .backupEmail(backupEmail)
-                .password(password)
-                .phoneNumber(phoneNumber)
-                .birthdate(birthdate)
-                .build();
-    }
+    private Boolean isActive;
 }

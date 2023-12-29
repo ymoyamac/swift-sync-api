@@ -9,6 +9,8 @@ import mx.com.aey.user.domain.repository.UserRepository;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.util.error.ErrorCode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -18,8 +20,17 @@ public class UserBs implements UserService {
     UserRepository userRepository;
 
     @Override
+    public Either<ErrorCode, List<User>> getUsers(Integer limit, Integer offset) {
+        var users = userRepository.findAll(limit, offset);
+        if (users.isEmpty()) {
+            return Either.right(new ArrayList<User>());
+        }
+        return Either.right(users);
+    }
+
+    @Override
     public Either<ErrorCode, User> getUserById(UUID userId) {
-        return userRepository.findById(userId)
+        return userRepository.findOneById(userId)
                 .<Either<ErrorCode, User>>map(Either::right)
                 .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
     }

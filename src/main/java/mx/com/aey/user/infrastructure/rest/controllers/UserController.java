@@ -8,13 +8,13 @@ import jakarta.ws.rs.core.Response;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.user.infrastructure.rest.dto.CreateUserDto;
 import mx.com.aey.user.infrastructure.rest.dto.UserDto;
-import mx.com.aey.util.error.ErrorCode;
 import mx.com.aey.util.error.ErrorMapper;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Path("/users")
 public class UserController {
@@ -22,7 +22,7 @@ public class UserController {
     @Inject
     UserService userService;
 
-    @GET()
+    @GET
     @APIResponse(
             responseCode = "200",
             description = "Operation completed successfully",
@@ -36,7 +36,29 @@ public class UserController {
             responseCode = "404",
             description = "Resource not found"
     )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsers(@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset) {
+        return userService.getUsers(limit, offset)
+                .map(users -> Response.ok(users.stream().map(UserDto::fromEntity).collect(Collectors.toList())))
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
+    @GET
     @Path("/user/{userId}")
+    @APIResponse(
+            responseCode = "200",
+            description = "Operation completed successfully",
+            content = @Content(schema = @Schema(implementation = UserDto.class))
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid request format. Please check the request body"
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Resource not found"
+    )
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserById(@PathParam("userId") UUID userId) {
         return userService.getUserById(userId)
