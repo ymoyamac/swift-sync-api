@@ -21,6 +21,8 @@ public class UserBs implements UserService {
 
     @Override
     public Either<ErrorCode, List<User>> getUsers(Integer limit, Integer offset) {
+        limit = limit == null ? 10 : limit;
+        offset = offset == null ? 0 : offset;
         var users = userRepository.findAll(limit, offset);
         if (users.isEmpty()) {
             return Either.right(new ArrayList<User>());
@@ -31,6 +33,13 @@ public class UserBs implements UserService {
     @Override
     public Either<ErrorCode, User> getUserById(UUID userId) {
         return userRepository.findOneById(userId)
+                .<Either<ErrorCode, User>>map(Either::right)
+                .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
+    }
+
+    @Override
+    public Either<ErrorCode, User> getUserByEmail(String userEmail) {
+        return userRepository.findOneByEmail(userEmail)
                 .<Either<ErrorCode, User>>map(Either::right)
                 .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
     }

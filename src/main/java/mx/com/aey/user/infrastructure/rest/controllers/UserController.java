@@ -67,6 +67,29 @@ public class UserController {
                 .build();
     }
 
+    @GET
+    @Path("/{userEmail}")
+    @APIResponse(
+            responseCode = "200",
+            description = "Operation completed successfully",
+            content = @Content(schema = @Schema(implementation = UserDto.class))
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid request format. Please check the request body"
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Resource not found"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserByEmail(@PathParam("userEmail") String userEmail) {
+        return userService.getUserByEmail(userEmail)
+                .map(user -> Response.ok(UserDto.fromEntity(user)))
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
     @POST
     @APIResponse(
             responseCode = "200",

@@ -11,6 +11,7 @@ public interface UserService {
 
     Either<ErrorCode, List<User>> getUsers(Integer limit, Integer offset);
     Either<ErrorCode, User> getUserById(UUID userId);
+    Either<ErrorCode, User> getUserByEmail(String userEmail);
     Either<ErrorCode, User> create(User user);
 
 }
