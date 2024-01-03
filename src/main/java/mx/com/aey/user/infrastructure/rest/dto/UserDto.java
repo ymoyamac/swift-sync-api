@@ -39,10 +39,6 @@ public class UserDto {
 
     @JsonProperty
     @Schema(readOnly = true)
-    private String password;
-
-    @JsonProperty
-    @Schema(readOnly = true)
     @Size(min=10, max=10)
     private String phoneNumber;
 
@@ -61,7 +57,6 @@ public class UserDto {
                 .lastName(entity.getLastName())
                 .email(entity.getEmail())
                 .backupEmail(entity.getBackupEmail())
-                .password(entity.getPassword())
                 .phoneNumber(entity.getPhoneNumber())
                 .birthdate(entity.getBirthdate())
                 .isActive(entity.getIsActive())
