@@ -66,6 +66,7 @@ public class CreateUserDto {
     @NotNull
     @NotBlank
     @NotEmpty
+    @PastOrPresent
     private Date birthdate;
 
     @JsonProperty
