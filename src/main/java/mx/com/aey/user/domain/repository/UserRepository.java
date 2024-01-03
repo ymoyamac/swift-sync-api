@@ -12,4 +12,5 @@ public interface UserRepository {
     Optional<User> findOneById(UUID userId);
     Optional<User> findOneByEmail(String userEmail);
     User save(User user);
+    Optional<User> update(User user);
 }

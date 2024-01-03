@@ -39,7 +39,6 @@ public class UserDto {
 
     @JsonProperty
     @Schema(readOnly = true)
-    @Size(min=10, max=10)
     private String phoneNumber;
 
     @JsonProperty

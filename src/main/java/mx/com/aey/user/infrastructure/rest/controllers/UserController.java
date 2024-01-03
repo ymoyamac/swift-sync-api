@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.user.infrastructure.rest.dto.CreateUserDto;
+import mx.com.aey.user.infrastructure.rest.dto.UpdateUserDto;
 import mx.com.aey.user.infrastructure.rest.dto.UserDto;
 import mx.com.aey.util.error.ErrorMapper;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -94,7 +95,7 @@ public class UserController {
     @APIResponse(
             responseCode = "200",
             description = "Resource created successfully",
-            content = @Content(schema = @Schema(implementation = UserDto.class))
+            content = @Content(schema = @Schema(implementation = CreateUserDto.class))
     )
     @APIResponse(
             responseCode = "400",
@@ -105,6 +106,31 @@ public class UserController {
     public Response createUser(@Valid CreateUserDto createUserDto) {
         return userService.create(createUserDto.toEntity())
                 .map(Response::ok)
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
+    @PUT
+    @Path("/user/{userId}")
+    @APIResponse(
+            responseCode = "200",
+            description = "Resource updated successfully",
+            content = @Content(schema = @Schema(implementation = UpdateUserDto.class))
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid request format. Please check the request body"
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Resource not found"
+    )
+    public Response updateUser(
+            @PathParam("userId") UUID userId,
+            @Valid UpdateUserDto updateUserDto
+    ) {
+        return userService.update(userId, updateUserDto.toEntity())
+                .map(user -> Response.ok(UserDto.fromEntity(user)))
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();
     }
