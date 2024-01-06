@@ -9,10 +9,9 @@ import mx.com.aey.user.domain.repository.UserRepository;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.util.error.ErrorCode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserBs implements UserService {
@@ -48,8 +47,17 @@ public class UserBs implements UserService {
     @Override
     @Transactional
     public Either<ErrorCode, User> create(User user) {
-        User userCreated = userRepository.save(user);
-        return Either.right(userCreated);
+        var error = validateNotNullBlankValues(user);
+        if (error != null) {
+            return Either.left(error);
+        }
+        Optional<User> userFound = userRepository.findOneByEmail(user.getEmail());
+        if (userFound.isPresent()) {
+            return Either.left(ErrorCode.UNIQUENESS_RULE);
+        } else {
+            User userCreated = userRepository.save(user);
+            return Either.right(userCreated);
+        }
     }
 
     @Override
@@ -71,5 +79,26 @@ public class UserBs implements UserService {
                     .orElseGet(() -> Either.left(ErrorCode.BAD_REQUEST));
         }
         return Either.left(ErrorCode.NOT_FOUND);
+    }
+
+    private ErrorCode validateNotNullBlankValues(User user) {
+        var userClass = user.getClass();
+        var values = userClass.getDeclaredMethods();
+        for (Method method : values) {
+            if (method.getName().startsWith("get") && !method.getName().equals("getUserId")) {
+                try {
+                    Object value = method.invoke(user);
+                    if (value == "") {
+                        return ErrorCode.NOT_BLANK_VALUE;
+                    }
+                    if (value == null) {
+                        return ErrorCode.NOT_NULL_VALUE;
+                    }
+                } catch (Exception e) {
+                    return ErrorCode.INTERNATIONAL_SERVER_ERROR;
+                }
+            }
+        }
+        return null;
     }
 }

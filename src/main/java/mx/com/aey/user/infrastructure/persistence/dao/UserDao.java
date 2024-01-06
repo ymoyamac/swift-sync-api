@@ -3,6 +3,7 @@ package mx.com.aey.user.infrastructure.persistence.dao;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import mx.com.aey.user.domain.entity.User;
 import mx.com.aey.user.domain.repository.UserRepository;
 import mx.com.aey.user.infrastructure.persistence.model.UserJpa;
@@ -56,23 +57,24 @@ public class UserDao implements UserRepository {
 
     @Override
     public Optional<User> findOneByEmail(String userEmail) {
-        Object[] result = (Object[]) entityManager.createNativeQuery(UserQuery.FIND_USER_BY_EMAIL)
-                .setParameter(UserQuery.PARAM_USER_EMAIL, userEmail)
-                .getSingleResult();
-        if (result == null) {
+        try {
+            Object[] result = (Object[]) entityManager.createNativeQuery(UserQuery.FIND_USER_BY_EMAIL)
+                    .setParameter(UserQuery.PARAM_USER_EMAIL, userEmail)
+                    .getSingleResult();
+            User user = User.builder()
+                    .userId((UUID) result[0])
+                    .firstName((String) result[1])
+                    .lastName((String) result[2])
+                    .email((String) result[3])
+                    .backupEmail((String) result[4])
+                    .birthdate((Date) result[5])
+                    .phoneNumber((String) result[6])
+                    .isActive((Boolean) result[7])
+                    .build();
+            return Optional.of(user);
+        } catch (NoResultException e) {
             return Optional.empty();
         }
-        User user = User.builder()
-                .userId((UUID) result[0])
-                .firstName((String) result[1])
-                .lastName((String) result[2])
-                .email((String) result[3])
-                .backupEmail((String) result[4])
-                .birthdate((Date) result[5])
-                .phoneNumber((String) result[6])
-                .isActive((Boolean) result[7])
-                .build();
-        return Optional.of(user);
     }
 
     @Override

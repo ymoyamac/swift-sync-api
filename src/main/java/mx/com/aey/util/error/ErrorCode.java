@@ -6,6 +6,10 @@ import lombok.Getter;
 public enum ErrorCode {
     NOT_FOUND(404, "Resource not found"),
     BAD_REQUEST(400, "Invalid request format. Please check the request body"),
+    UNIQUENESS_RULE(400, "Insertion error. This element already exists"),
+    NOT_NULL_VALUE(400, "Value cannot be null. Please provide a valid value for the required field"),
+    NOT_BLANK_VALUE(400, "Value cannot be black. Please provide a valid value for the required field"),
+    INTERNATIONAL_SERVER_ERROR(500, "Internal Server Error. An unexpected error occurred while processing the request. Please try again later or contact support"),
     ;
 
     private final String description;
