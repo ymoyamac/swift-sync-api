@@ -10,6 +10,8 @@ import mx.com.aey.user.infrastructure.rest.dto.CreateUserDto;
 import mx.com.aey.user.infrastructure.rest.dto.UpdateUserDto;
 import mx.com.aey.user.infrastructure.rest.dto.UserDto;
 import mx.com.aey.util.error.ErrorMapper;
+import mx.com.aey.util.schema.ResponseCode;
+import mx.com.aey.util.schema.ResponseCodeMapper;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
@@ -131,6 +133,28 @@ public class UserController {
     ) {
         return userService.update(userId, updateUserDto.toEntity())
                 .map(user -> Response.ok(UserDto.fromEntity(user)))
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
+    @DELETE
+    @Path("/user/{userId}")
+    @APIResponse(
+            responseCode = "200",
+            description = "Resource updated successfully",
+            content = @Content(schema = @Schema(implementation = ResponseCode.class))
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid request format. Please check the request body"
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Resource not found"
+    )
+    public Response deleteUser(@PathParam("userId") UUID userId) {
+        return userService.delete(userId)
+                .map(ResponseCodeMapper::toResponse)
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();
     }

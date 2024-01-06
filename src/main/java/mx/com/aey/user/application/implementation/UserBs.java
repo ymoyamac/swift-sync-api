@@ -8,6 +8,7 @@ import mx.com.aey.user.domain.entity.User;
 import mx.com.aey.user.domain.repository.UserRepository;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.util.error.ErrorCode;
+import mx.com.aey.util.schema.ResponseCode;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -79,6 +80,17 @@ public class UserBs implements UserService {
                     .orElseGet(() -> Either.left(ErrorCode.BAD_REQUEST));
         }
         return Either.left(ErrorCode.NOT_FOUND);
+    }
+
+    @Override
+    public Either<ErrorCode, ResponseCode> delete(UUID userId) {
+        var userFound = userRepository.findOneById(userId);
+        if (userFound.isEmpty()) {
+            return Either.left(ErrorCode.NOT_FOUND);
+        }
+        var user = userFound.get();
+        userRepository.delete(user.getUserId());
+        return Either.right(ResponseCode.DELETED);
     }
 
     private ErrorCode validateNotNullBlankValues(User user) {

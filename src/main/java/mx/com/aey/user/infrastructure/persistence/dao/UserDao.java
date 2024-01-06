@@ -8,6 +8,7 @@ import mx.com.aey.user.domain.entity.User;
 import mx.com.aey.user.domain.repository.UserRepository;
 import mx.com.aey.user.infrastructure.persistence.model.UserJpa;
 import mx.com.aey.user.infrastructure.persistence.repository.UserJpaRepository;
+import mx.com.aey.util.schema.ResponseCode;
 
 import java.util.*;
 
@@ -85,5 +86,11 @@ public class UserDao implements UserRepository {
     @Override
     public Optional<User> update(User user) {
         return Optional.of(userJpaRepository.saveAndFlush(UserJpa.fromEntity(user)).toEntity());
+    }
+
+    @Override
+    public void delete(UUID userId) {
+        userJpaRepository.deleteById(userId);
+        userJpaRepository.flush();
     }
 }
