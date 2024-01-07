@@ -113,7 +113,7 @@ public class UserController {
                 .build();
     }
 
-    @PUT
+    @PATCH
     @Path("/user/{userId}")
     @APIResponse(
             responseCode = "200",
@@ -134,6 +134,31 @@ public class UserController {
     ) {
         return userService.update(userId, updateUserDto.toEntity())
                 .map(user -> Response.ok(UserDto.fromEntity(user)))
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
+    @PATCH
+    @Path("/user/email/{userId}")
+    @APIResponse(
+            responseCode = "200",
+            description = "Resource updated successfully",
+            content = @Content(schema = @Schema(implementation = ResponseCode.class))
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid request format"
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Resource not found"
+    )
+    public Response updateEmail(
+            @PathParam("userId") UUID userId,
+            @Valid UpdateEmailDto updateEmailDto
+    ) {
+        return userService.updateEmail(userId, updateEmailDto.toEntity())
+                .map(userEmail -> Response.ok(UpdateEmailDto.fromEntity(userEmail)))
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();
     }
@@ -160,15 +185,4 @@ public class UserController {
                 .build();
     }
 
-    @PATCH
-    @Path("/user/{userId}")
-    public Response updateEmail(
-            @PathParam("userId") UUID userId,
-            @Valid UpdateEmailDto updateEmailDto
-    ) {
-        return userService.updateEmail(userId, updateEmailDto.toEntity())
-                .map(userEmail -> Response.ok(UpdateEmailDto.fromEntity(userEmail)))
-                .getOrElseGet(ErrorMapper::toResponse)
-                .build();
-    }
 }

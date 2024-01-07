@@ -112,6 +112,10 @@ public class UserBs implements UserService {
         if (user == null) {
             return Either.left(ErrorCode.INTERNATIONAL_SERVER_ERROR);
         }
+        var error = validateNotNullBlankValues(user);
+        if (error != null) {
+            return Either.left(error);
+        }
         Optional<User> userEmailUpdated = userRepository.updateEmail(user);
         return userEmailUpdated
                 .<Either<ErrorCode, User>>map(Either::right)

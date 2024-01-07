@@ -89,13 +89,13 @@ public class UserDao implements UserRepository {
     }
 
     @Override
-    public void delete(UUID userId) {
-        userJpaRepository.deleteById(userId);
-        userJpaRepository.flush();
+    public Optional<User> updateEmail(User user) {
+        return Optional.of(userJpaRepository.save(UserJpa.fromEntity(user)).toEntity());
     }
 
     @Override
-    public Optional<User> updateEmail(User user) {
-        return Optional.of(userJpaRepository.save(UserJpa.fromEntity(user)).toEntity());
+    public void delete(UUID userId) {
+        userJpaRepository.deleteById(userId);
+        userJpaRepository.flush();
     }
 }
