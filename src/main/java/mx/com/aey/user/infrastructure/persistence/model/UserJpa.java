@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import jakarta.persistence.*;
+import io.quarkus.security.jpa.Password;
 
 import lombok.*;
 import mx.com.aey.user.domain.entity.User;
@@ -35,6 +36,7 @@ public class UserJpa {
     private String backupEmail;
 
     @Column(name = "u_password")
+    @Password
     private String password;
 
     @Column(name = "u_phone_number")
