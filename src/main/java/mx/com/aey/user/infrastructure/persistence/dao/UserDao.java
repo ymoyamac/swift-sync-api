@@ -79,8 +79,8 @@ public class UserDao implements UserRepository {
     }
 
     @Override
-    public User save(User User) {
-        return userJpaRepository.save(UserJpa.fromEntity(User)).toEntity();
+    public User save(User user) {
+        return userJpaRepository.save(UserJpa.fromEntity(user)).toEntity();
     }
 
     @Override
@@ -92,5 +92,10 @@ public class UserDao implements UserRepository {
     public void delete(UUID userId) {
         userJpaRepository.deleteById(userId);
         userJpaRepository.flush();
+    }
+
+    @Override
+    public Optional<User> updateEmail(User user) {
+        return Optional.of(userJpaRepository.save(UserJpa.fromEntity(user)).toEntity());
     }
 }

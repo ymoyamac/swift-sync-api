@@ -58,7 +58,6 @@ public class UserBs implements UserService {
         } else {
             var password = BcryptUtil.bcryptHash(user.getPassword());
             user.setPassword(password);
-            System.out.println(user.getPassword());
             User userCreated = userRepository.save(user);
             return Either.right(userCreated);
         }
@@ -96,7 +95,46 @@ public class UserBs implements UserService {
         return Either.right(ResponseCode.DELETED);
     }
 
-    private ErrorCode validateNotNullBlankValues(User user) {
+    @Override
+    public Either<ErrorCode, User> updateEmail(UUID userId, User userEmail) {
+        var userEmailExist = userRepository.findOneByEmail(userEmail.getEmail());
+        if (userEmailExist.isPresent()) {
+            return Either.left(ErrorCode.UNIQUENESS_RULE);
+        }
+        var userFound = userRepository.findOneById(userId);
+        if (userFound.isEmpty()) {
+            return Either.left(ErrorCode.NOT_FOUND);
+        }
+        if (userFound.get().getIsActive().equals(Boolean.FALSE)) {
+            return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+        }
+        User user = getUserEmailToUpdate(userEmail, userFound);
+        if (user == null) {
+            return Either.left(ErrorCode.INTERNATIONAL_SERVER_ERROR);
+        }
+        Optional<User> userEmailUpdated = userRepository.updateEmail(user);
+        return userEmailUpdated
+                .<Either<ErrorCode, User>>map(Either::right)
+                .orElseGet(() -> Either.left((ErrorCode.BAD_REQUEST)));
+    }
+
+    private static User getUserEmailToUpdate(User userEmail, Optional<User> userFound) {
+        if (userFound.isPresent()) {
+            User user = userFound.get();
+            user.setEmail(userEmail.getEmail());
+            user.setBackupEmail(userEmail.getBackupEmail() == null ? user.getBackupEmail() : userEmail.getBackupEmail());
+            user.setFirstName(user.getFirstName());
+            user.setLastName(user.getLastName());
+            user.setPhoneNumber(user.getPhoneNumber());
+            user.setBirthdate(user.getBirthdate());
+            user.setPassword(user.getPassword());
+            user.setIsActive(user.getIsActive());
+            return user;
+        }
+        return null;
+    }
+
+    private static ErrorCode validateNotNullBlankValues(User user) {
         var userClass = user.getClass();
         var values = userClass.getDeclaredMethods();
         for (Method method : values) {
