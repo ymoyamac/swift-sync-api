@@ -95,7 +95,7 @@ public class UserController {
 
     @POST
     @APIResponse(
-            responseCode = "200",
+            responseCode = "201",
             description = "Resource created successfully",
             content = @Content(schema = @Schema(implementation = CreateUserDto.class))
     )
@@ -107,7 +107,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(@Valid CreateUserDto createUserDto) {
         return userService.create(createUserDto.toEntity())
-                .map(Response::ok)
+                .map(user -> Response.ok(user).status(Response.Status.CREATED))
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();
     }

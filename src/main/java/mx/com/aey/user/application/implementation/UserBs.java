@@ -1,5 +1,6 @@
 package mx.com.aey.user.application.implementation;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.vavr.control.Either;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,7 +13,6 @@ import mx.com.aey.util.schema.ResponseCode;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserBs implements UserService {
@@ -56,6 +56,9 @@ public class UserBs implements UserService {
         if (userFound.isPresent()) {
             return Either.left(ErrorCode.UNIQUENESS_RULE);
         } else {
+            var password = BcryptUtil.bcryptHash(user.getPassword());
+            user.setPassword(password);
+            System.out.println(user.getPassword());
             User userCreated = userRepository.save(user);
             return Either.right(userCreated);
         }
