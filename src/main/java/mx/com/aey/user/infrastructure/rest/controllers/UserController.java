@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.user.infrastructure.rest.dto.CreateUserDto;
+import mx.com.aey.user.infrastructure.rest.dto.UpdateEmailDto;
 import mx.com.aey.user.infrastructure.rest.dto.UpdateUserDto;
 import mx.com.aey.user.infrastructure.rest.dto.UserDto;
 import mx.com.aey.util.error.ErrorMapper;
@@ -146,7 +147,7 @@ public class UserController {
     )
     @APIResponse(
             responseCode = "400",
-            description = "Invalid request format. Please check the request body"
+            description = "Invalid request format"
     )
     @APIResponse(
             responseCode = "404",
@@ -155,6 +156,18 @@ public class UserController {
     public Response deleteUser(@PathParam("userId") UUID userId) {
         return userService.delete(userId)
                 .map(ResponseCodeMapper::toResponse)
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
+    @PATCH
+    @Path("/user/{userId}")
+    public Response updateEmail(
+            @PathParam("userId") UUID userId,
+            @Valid UpdateEmailDto updateEmailDto
+    ) {
+        return userService.updateEmail(userId, updateEmailDto.toEntity())
+                .map(userEmail -> Response.ok(UpdateEmailDto.fromEntity(userEmail)))
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();
     }

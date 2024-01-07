@@ -15,4 +15,5 @@ public interface UserRepository {
     User save(User user);
     Optional<User> update(User user);
     void delete(UUID userId);
+    Optional<User> updateEmail(User user);
 }
