@@ -163,11 +163,33 @@ public class UserController {
                 .build();
     }
 
+    @PATCH
+    @Path("/user/state/{userId}")
+    @APIResponse(
+            responseCode = "200",
+            description = "Resource disable successfully",
+            content = @Content(schema = @Schema(implementation = ResponseCode.class))
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Invalid request format"
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Resource not found"
+    )
+    public Response disableUser(@PathParam("userId") UUID userId) {
+        return userService.disableUser(userId)
+                .map(ResponseCodeMapper::toResponse)
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
     @DELETE
     @Path("/user/{userId}")
     @APIResponse(
             responseCode = "200",
-            description = "Resource updated successfully",
+            description = "Resource deleted successfully",
             content = @Content(schema = @Schema(implementation = ResponseCode.class))
     )
     @APIResponse(

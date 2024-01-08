@@ -16,4 +16,5 @@ public interface UserRepository {
     Optional<User> update(User user);
     void delete(UUID userId);
     Optional<User> updateEmail(User user);
+    void disable(User user);
 }

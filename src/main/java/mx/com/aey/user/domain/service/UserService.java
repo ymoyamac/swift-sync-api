@@ -17,5 +17,6 @@ public interface UserService {
     Either<ErrorCode, User> update(UUID userId, User user);
     Either<ErrorCode, ResponseCode> delete(UUID userId);
     Either<ErrorCode, User> updateEmail(UUID userId, User user);
+    Either<ErrorCode, ResponseCode> disableUser(UUID userId);
 
 }
