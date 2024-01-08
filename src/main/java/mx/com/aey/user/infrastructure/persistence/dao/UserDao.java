@@ -94,6 +94,12 @@ public class UserDao implements UserRepository {
     }
 
     @Override
+    public void disable(User user) {
+        userJpaRepository.saveAndFlush(UserJpa.fromEntity(user)).toEntity();
+        userJpaRepository.flush();
+    }
+
+    @Override
     public void delete(UUID userId) {
         userJpaRepository.deleteById(userId);
         userJpaRepository.flush();

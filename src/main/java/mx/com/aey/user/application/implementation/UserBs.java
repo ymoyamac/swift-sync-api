@@ -13,6 +13,7 @@ import mx.com.aey.util.schema.ResponseCode;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UserBs implements UserService {
@@ -28,20 +29,36 @@ public class UserBs implements UserService {
         if (users.isEmpty()) {
             return Either.right(new ArrayList<User>());
         }
-        return Either.right(users);
+        var activeUsers = users.stream().map(user -> {
+            if (user.getIsActive().equals(Boolean.TRUE)) {
+                return user;
+            }
+            return null;
+        }).collect(Collectors.toList());
+        return Either.right(activeUsers);
     }
 
     @Override
     public Either<ErrorCode, User> getUserById(UUID userId) {
         return userRepository.findOneById(userId)
-                .<Either<ErrorCode, User>>map(Either::right)
+                .<Either<ErrorCode, User>>map(user -> {
+                    if (user.getIsActive().equals(Boolean.FALSE)) {
+                        return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+                    }
+                    return Either.right(user);
+                })
                 .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
     }
 
     @Override
     public Either<ErrorCode, User> getUserByEmail(String userEmail) {
         return userRepository.findOneByEmail(userEmail)
-                .<Either<ErrorCode, User>>map(Either::right)
+                .<Either<ErrorCode, User>>map(user -> {
+                    if (user.getIsActive().equals(Boolean.FALSE)) {
+                        return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+                    }
+                    return Either.right(user);
+                })
                 .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
     }
 
@@ -66,22 +83,17 @@ public class UserBs implements UserService {
     @Override
     public Either<ErrorCode, User> update(UUID userId, User userTo) {
         var userFound = userRepository.findOneById(userId);
-        if (userFound.isPresent()) {
-            User user = userFound.get();
-            user.setFirstName(userTo.getFirstName() != null ? userTo.getFirstName() : user.getFirstName());
-            user.setLastName(userTo.getLastName() != null ? userTo.getLastName() : user.getLastName());
-            user.setPhoneNumber(userTo.getPhoneNumber() != null ? userTo.getPhoneNumber() : user.getPhoneNumber());
-            user.setBirthdate(userTo.getBirthdate() != null ? userTo.getBirthdate() : user.getBirthdate());
-            user.setEmail(user.getEmail());
-            user.setBackupEmail(user.getBackupEmail());
-            user.setPassword(user.getPassword());
-            user.setIsActive(user.getIsActive());
-            Optional<User> userUpdated = userRepository.update(user);
-            return userUpdated
-                    .<Either<ErrorCode, User>>map(Either::right)
-                    .orElseGet(() -> Either.left(ErrorCode.BAD_REQUEST));
+        if (userFound.isEmpty()) {
+            return Either.left(ErrorCode.NOT_FOUND);
         }
-        return Either.left(ErrorCode.NOT_FOUND);
+        if (userFound.get().getIsActive().equals(Boolean.FALSE)) {
+            return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+        }
+        var user = getUserToUpdate(userTo, userFound);
+        Optional<User> userUpdated = userRepository.update(user);
+        return userUpdated
+                .<Either<ErrorCode, User>>map(Either::right)
+                .orElseGet(() -> Either.left(ErrorCode.BAD_REQUEST));
     }
 
     @Override
@@ -90,6 +102,9 @@ public class UserBs implements UserService {
         if (userFound.isEmpty()) {
             return Either.left(ErrorCode.NOT_FOUND);
         }
+        if (userFound.get().getIsActive().equals(Boolean.FALSE)) {
+            return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+        }
         var user = userFound.get();
         userRepository.delete(user.getUserId());
         return Either.right(ResponseCode.DELETED);
@@ -97,16 +112,16 @@ public class UserBs implements UserService {
 
     @Override
     public Either<ErrorCode, User> updateEmail(UUID userId, User userEmail) {
-        var userEmailExist = userRepository.findOneByEmail(userEmail.getEmail());
-        if (userEmailExist.isPresent()) {
-            return Either.left(ErrorCode.UNIQUENESS_RULE);
-        }
         var userFound = userRepository.findOneById(userId);
         if (userFound.isEmpty()) {
             return Either.left(ErrorCode.NOT_FOUND);
         }
         if (userFound.get().getIsActive().equals(Boolean.FALSE)) {
             return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+        }
+        var userEmailExist = userRepository.findOneByEmail(userEmail.getEmail());
+        if (userEmailExist.isPresent()) {
+            return Either.left(ErrorCode.UNIQUENESS_RULE);
         }
         User user = getUserEmailToUpdate(userEmail, userFound);
         if (user == null) {
@@ -120,6 +135,21 @@ public class UserBs implements UserService {
         return userEmailUpdated
                 .<Either<ErrorCode, User>>map(Either::right)
                 .orElseGet(() -> Either.left((ErrorCode.BAD_REQUEST)));
+    }
+
+    @Override
+    public Either<ErrorCode, ResponseCode> disableUser(UUID userId) {
+        var userFound = userRepository.findOneById(userId);
+        if (userFound.isEmpty()) {
+            return Either.left(ErrorCode.NOT_FOUND);
+        }
+        if (userFound.get().getIsActive().equals(Boolean.FALSE)) {
+            return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+        }
+        User user = userFound.get();
+        user.setIsActive(Boolean.FALSE);
+        userRepository.disable(user);
+        return Either.right(ResponseCode.DISABLE);
     }
 
     private static User getUserEmailToUpdate(User userEmail, Optional<User> userFound) {
@@ -137,6 +167,23 @@ public class UserBs implements UserService {
         }
         return null;
     }
+
+    private static User getUserToUpdate(User userTo, Optional<User> userFound) {
+        if (userFound.isPresent()) {
+            var user = userFound.get();
+            user.setFirstName(userTo.getFirstName() != null ? userTo.getFirstName() : user.getFirstName());
+            user.setLastName(userTo.getLastName() != null ? userTo.getLastName() : user.getLastName());
+            user.setPhoneNumber(userTo.getPhoneNumber() != null ? userTo.getPhoneNumber() : user.getPhoneNumber());
+            user.setBirthdate(userTo.getBirthdate() != null ? userTo.getBirthdate() : user.getBirthdate());
+            user.setEmail(user.getEmail());
+            user.setBackupEmail(user.getBackupEmail());
+            user.setPassword(user.getPassword());
+            user.setIsActive(user.getIsActive());
+            return user;
+        }
+        return null;
+    }
+
 
     private static ErrorCode validateNotNullBlankValues(User user) {
         var userClass = user.getClass();

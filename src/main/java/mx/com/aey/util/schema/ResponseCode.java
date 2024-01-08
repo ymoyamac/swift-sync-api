@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ResponseCode {
     CREATED("Resource was successfully created"),
     DELETED("Resource was successfully deleted"),
+    DISABLE("Resource has been successfully deactivated"),
     ;
 
     private final String description;
