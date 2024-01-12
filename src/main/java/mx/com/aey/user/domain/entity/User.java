@@ -14,6 +14,7 @@ public class User {
     private UUID userId;
     private String firstName;
     private String lastName;
+    private String nickName;
     private String email;
     private String backupEmail;
     private String password;

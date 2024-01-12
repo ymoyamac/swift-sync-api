@@ -23,26 +23,25 @@ public class UserDao implements UserRepository {
 
     @Override
     public List<User> findAll(Integer limit, Integer offset) {
-
         List<Object[]> result = entityManager
                 .createNativeQuery(UserQuery.USERS_PAGINATION)
                 .setParameter(UserQuery.PARAM_USER_LIMIT, limit)
                 .setParameter(UserQuery.PARAM_USER_OFFSET, offset)
                 .getResultList();
         List<User> users = new ArrayList<>();
-
         if (!result.isEmpty()) {
             result.forEach(user -> users.add(
-                    User.builder()
-                            .userId((UUID) user[0])
-                            .firstName((String) user[1])
-                            .lastName((String) user[2])
-                            .email((String) user[3])
-                            .backupEmail((String) user[4])
-                            .birthdate((Date) user[5])
-                            .phoneNumber((String) user[6])
-                            .isActive((Boolean) user[7])
-                            .build()
+                User.builder()
+                    .userId((UUID) user[0])
+                    .firstName((String) user[1])
+                    .lastName((String) user[2])
+                    .nickName((String) user[3])
+                    .email((String) user[4])
+                    .backupEmail((String) user[5])
+                    .birthdate((Date) user[6])
+                    .phoneNumber((String) user[7])
+                    .isActive((Boolean) user[8])
+                    .build()
             ));
         } else {
             return new ArrayList<>();
@@ -63,15 +62,16 @@ public class UserDao implements UserRepository {
                     .setParameter(UserQuery.PARAM_USER_EMAIL, userEmail)
                     .getSingleResult();
             User user = User.builder()
-                    .userId((UUID) result[0])
-                    .firstName((String) result[1])
-                    .lastName((String) result[2])
-                    .email((String) result[3])
-                    .backupEmail((String) result[4])
-                    .birthdate((Date) result[5])
-                    .phoneNumber((String) result[6])
-                    .isActive((Boolean) result[7])
-                    .build();
+                .userId((UUID) result[0])
+                .firstName((String) result[1])
+                .lastName((String) result[2])
+                .nickName((String) result[3])
+                .email((String) result[4])
+                .backupEmail((String) result[5])
+                .birthdate((Date) result[6])
+                .phoneNumber((String) result[7])
+                .isActive((Boolean) result[8])
+                .build();
             return Optional.of(user);
         } catch (NoResultException e) {
             return Optional.empty();

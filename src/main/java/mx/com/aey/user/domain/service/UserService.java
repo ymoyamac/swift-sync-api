@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
-
     Either<ErrorCode, List<User>> getUsers(Integer limit, Integer offset);
     Either<ErrorCode, User> getUserById(UUID userId);
     Either<ErrorCode, User> getUserByEmail(String userEmail);
@@ -18,5 +17,4 @@ public interface UserService {
     Either<ErrorCode, ResponseCode> delete(UUID userId);
     Either<ErrorCode, User> updateEmail(UUID userId, User user);
     Either<ErrorCode, ResponseCode> disableUser(UUID userId);
-
 }

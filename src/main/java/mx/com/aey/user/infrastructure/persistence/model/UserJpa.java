@@ -1,12 +1,14 @@
 package mx.com.aey.user.infrastructure.persistence.model;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.*;
 import io.quarkus.security.jpa.Password;
 
 import lombok.*;
+import mx.com.aey.user.domain.entity.Role;
 import mx.com.aey.user.domain.entity.User;
 
 @AllArgsConstructor
@@ -20,7 +22,7 @@ public class UserJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique = true)
     private UUID userId;
 
     @Column(name = "u_first_name")
@@ -29,7 +31,10 @@ public class UserJpa {
     @Column(name = "u_last_name")
     private String lastName;
 
-    @Column(name = "u_email")
+    @Column(name = "u_nick_name")
+    private String nickName;
+
+    @Column(name = "u_email", unique = true)
     private String email;
 
     @Column(name = "u_backup_email")
@@ -48,11 +53,20 @@ public class UserJpa {
     @Column(name = "u_is_active")
     private Boolean isActive;
 
+    @ManyToMany()
+    @JoinTable(
+            name = "usr03_roles_users",
+            joinColumns = @JoinColumn(name = "user_id", insertable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "role_id", insertable = false, updatable = false)
+    )
+    private Set<RoleJpa> role;
+
     public static UserJpa fromEntity(User entity) {
         return UserJpa.builder()
                 .userId(entity.getUserId())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
+                .nickName(entity.getNickName())
                 .email(entity.getEmail())
                 .backupEmail(entity.getBackupEmail())
                 .password(entity.getPassword())
@@ -67,6 +81,7 @@ public class UserJpa {
                 .userId(userId)
                 .firstName(firstName)
                 .lastName(lastName)
+                .nickName(nickName)
                 .email(email)
                 .backupEmail(backupEmail)
                 .password(password)

@@ -19,21 +19,28 @@ import mx.com.aey.user.infrastructure.persistence.model.UserJpa;
 public class CreateUserDto {
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotNull
     @NotBlank
     @NotEmpty
     private String firstName;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotNull
     @NotBlank
     @NotEmpty
     private String lastName;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String nickName;
+
+    @JsonProperty
+    @Schema(required = true)
     @NotNull
     @NotBlank
     @NotEmpty
@@ -41,19 +48,19 @@ public class CreateUserDto {
     private String email;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @Email
     private String backupEmail;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotNull
     @NotBlank
     @NotEmpty
     private String password;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotNull
     @NotBlank
     @NotEmpty
@@ -62,7 +69,7 @@ public class CreateUserDto {
     private String phoneNumber;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotNull
     @NotBlank
     @NotEmpty
@@ -70,7 +77,7 @@ public class CreateUserDto {
     private Date birthdate;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotNull
     @NotBlank
     @NotEmpty
@@ -80,6 +87,7 @@ public class CreateUserDto {
         return User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
+                .nickName(nickName)
                 .email(email)
                 .backupEmail(backupEmail)
                 .password(password)

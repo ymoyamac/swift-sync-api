@@ -14,6 +14,7 @@ public class UserQuery {
             "select user_id, " +
             "u_first_name as first_name, " +
             "u_last_name as last_name, " +
+            "u_nick_name as nick_name, " +
             "u_email as email, " +
             "u_backup_email as backup_email, " +
             "u_birthdate as birthdate, " +
@@ -28,6 +29,7 @@ public class UserQuery {
             "user_id, " +
             "u_first_name as first_name, " +
             "u_last_name as last_name, " +
+            "u_nick_name as nick_name, " +
             "u_email as email, " +
             "u_backup_email as backup_email, " +
             "u_birthdate as birthdate, " +
