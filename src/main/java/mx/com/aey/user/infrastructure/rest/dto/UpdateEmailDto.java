@@ -19,10 +19,10 @@ public class UpdateEmailDto {
 
     @JsonProperty
     @Schema(required = true)
-    @NotNull(message = "Value cannot be null")
-    @NotBlank(message = "Value cannot be blank")
-    @NotEmpty(message = "Value cannot be empty")
-    @Email(message = "Email not valid")
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    @Email
     private String email;
 
     @JsonProperty

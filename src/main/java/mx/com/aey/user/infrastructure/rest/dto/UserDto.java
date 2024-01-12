@@ -31,6 +31,10 @@ public class UserDto {
 
     @JsonProperty
     @Schema(readOnly = true)
+    private String nickName;
+
+    @JsonProperty
+    @Schema(readOnly = true)
     private String email;
 
     @JsonProperty
@@ -54,6 +58,7 @@ public class UserDto {
                 .userId(entity.getUserId())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
+                .nickName(entity.getNickName())
                 .email(entity.getEmail())
                 .backupEmail(entity.getBackupEmail())
                 .phoneNumber(entity.getPhoneNumber())

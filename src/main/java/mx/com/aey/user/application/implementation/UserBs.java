@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import mx.com.aey.user.domain.entity.User;
+import mx.com.aey.user.domain.enums.UserRoles;
 import mx.com.aey.user.domain.repository.UserRepository;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.util.error.ErrorCode;

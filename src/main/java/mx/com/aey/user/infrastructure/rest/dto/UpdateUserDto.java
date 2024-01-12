@@ -17,21 +17,28 @@ import java.util.Date;
 public class UpdateUserDto {
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotBlank
     @NotEmpty
     @NotNull
     private String firstName;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotBlank
     @NotEmpty
     @NotNull
     private String lastName;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    private String nickName;
+
+    @JsonProperty
+    @Schema(required = true)
     @NotBlank
     @NotEmpty
     @NotNull
@@ -39,7 +46,7 @@ public class UpdateUserDto {
     private String email;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotBlank
     @NotEmpty
     @NotNull
@@ -47,7 +54,7 @@ public class UpdateUserDto {
     private String backupEmail;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotBlank
     @NotEmpty
     @NotNull
@@ -56,7 +63,7 @@ public class UpdateUserDto {
     private String phoneNumber;
 
     @JsonProperty
-    @Schema(readOnly = true)
+    @Schema(required = true)
     @NotBlank
     @NotEmpty
     @NotNull
@@ -67,6 +74,7 @@ public class UpdateUserDto {
         return User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
+                .nickName(nickName)
                 .email(email)
                 .backupEmail(backupEmail)
                 .phoneNumber(phoneNumber)

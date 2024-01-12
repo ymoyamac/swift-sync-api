@@ -101,6 +101,14 @@
       <artifactId>hibernate-core</artifactId>
       <version>5.6.15.Final</version>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-jwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-jwt-build</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
