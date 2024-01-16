@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class Role {
-    private Long roleId;
+    private Integer roleId;
     private String roleName;
     private Boolean isActive;
 }

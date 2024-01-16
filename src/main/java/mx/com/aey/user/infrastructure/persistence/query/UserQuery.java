@@ -1,4 +1,4 @@
-package mx.com.aey.user.infrastructure.persistence.dao;
+package mx.com.aey.user.infrastructure.persistence.query;
 
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -7,10 +7,12 @@ import mx.com.aey.user.domain.entity.User;
 
 public class UserQuery {
 
-    static  final String PARAM_USER_LIMIT = "limit";
-    static  final String PARAM_USER_OFFSET = "offset";
-    static final String PARAM_USER_EMAIL = "userEmail";
-    static final String USERS_PAGINATION =
+    public static  final String PARAM_USER_LIMIT = "limit";
+    public static  final String PARAM_USER_OFFSET = "offset";
+    public static final String PARAM_USER_EMAIL = "userEmail";
+    public static final String PARAM_USER_ID = "userId";
+
+    public static final String USERS_PAGINATION =
             "select user_id, " +
             "u_first_name as first_name, " +
             "u_last_name as last_name, " +
@@ -24,7 +26,7 @@ public class UserQuery {
             "where (u_is_active = true) " +
             "limit coalesce(:limit, 10) " +
             "offset coalesce(:offset, 0)";
-    static final String FIND_USER_BY_EMAIL =
+    public static final String FIND_USER_BY_EMAIL =
             "select " +
             "user_id, " +
             "u_first_name as first_name, " +
