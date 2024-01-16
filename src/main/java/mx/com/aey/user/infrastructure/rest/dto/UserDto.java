@@ -3,10 +3,12 @@ package mx.com.aey.user.infrastructure.rest.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import mx.com.aey.user.domain.entity.Role;
 import mx.com.aey.user.domain.entity.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -53,6 +55,10 @@ public class UserDto {
     @Schema(readOnly = true)
     private Boolean isActive;
 
+    @JsonProperty
+    @Schema(readOnly = true)
+    private Set<Role> roles;
+
     public static UserDto fromEntity(User entity) {
         return UserDto.builder()
                 .userId(entity.getUserId())
@@ -64,6 +70,7 @@ public class UserDto {
                 .phoneNumber(entity.getPhoneNumber())
                 .birthdate(entity.getBirthdate())
                 .isActive(entity.getIsActive())
+                .roles(entity.getRoles())
                 .build();
     }
 

@@ -81,7 +81,7 @@ public class CreateUserDto {
     @NotNull
     @NotBlank
     @NotEmpty
-    private Boolean isActive = Boolean.TRUE;
+    private Boolean isActive;
 
     public User toEntity() {
         return User.builder()

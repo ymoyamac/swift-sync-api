@@ -5,9 +5,12 @@ import io.vavr.control.Either;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import mx.com.aey.user.domain.entity.Role;
 import mx.com.aey.user.domain.entity.User;
 import mx.com.aey.user.domain.enums.UserRoles;
+import mx.com.aey.user.domain.repository.RoleRepository;
 import mx.com.aey.user.domain.repository.UserRepository;
+import mx.com.aey.user.domain.service.RoleService;
 import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.util.error.ErrorCode;
 import mx.com.aey.util.schema.ResponseCode;
@@ -21,6 +24,8 @@ public class UserBs implements UserService {
 
     @Inject
     UserRepository userRepository;
+    @Inject
+    RoleService roleService;
 
     @Override
     public Either<ErrorCode, List<User>> getUsers(Integer limit, Integer offset) {
@@ -32,6 +37,8 @@ public class UserBs implements UserService {
         }
         var activeUsers = users.stream().map(user -> {
             if (user.getIsActive().equals(Boolean.TRUE)) {
+                var roles = roleService.getUserRolesByUserId(user.getUserId());
+                user.setRoles(roles);
                 return user;
             }
             return null;
@@ -41,14 +48,17 @@ public class UserBs implements UserService {
 
     @Override
     public Either<ErrorCode, User> getUserById(UUID userId) {
-        return userRepository.findOneById(userId)
-                .<Either<ErrorCode, User>>map(user -> {
-                    if (user.getIsActive().equals(Boolean.FALSE)) {
-                        return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
-                    }
-                    return Either.right(user);
-                })
-                .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
+        var result = userRepository.findOneById(userId);
+        if (result.isEmpty()) {
+            return Either.left(ErrorCode.NOT_FOUND);
+        }
+        if (result.get().getIsActive().equals(Boolean.FALSE)) {
+            return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+        }
+        User user = result.get();
+        var roles = roleService.getUserRolesByUserId(user.getUserId());
+        user.setRoles(roles);
+        return Either.right(user);
     }
 
     @Override
@@ -58,6 +68,8 @@ public class UserBs implements UserService {
                     if (user.getIsActive().equals(Boolean.FALSE)) {
                         return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
                     }
+                    var roles = roleService.getUserRolesByUserId(user.getUserId());
+                    user.setRoles(roles);
                     return Either.right(user);
                 })
                 .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
@@ -76,6 +88,7 @@ public class UserBs implements UserService {
         } else {
             var password = BcryptUtil.bcryptHash(user.getPassword());
             user.setPassword(password);
+            user.setIsActive(Boolean.TRUE);
             User userCreated = userRepository.save(user);
             return Either.right(userCreated);
         }
