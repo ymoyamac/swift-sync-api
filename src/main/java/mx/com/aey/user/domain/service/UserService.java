@@ -17,4 +17,6 @@ public interface UserService {
     Either<ErrorCode, ResponseCode> delete(UUID userId);
     Either<ErrorCode, User> updateEmail(UUID userId, User user);
     Either<ErrorCode, ResponseCode> disableUser(UUID userId);
+    Either<ErrorCode, User> getUserByNickName(String nickName);
+
 }

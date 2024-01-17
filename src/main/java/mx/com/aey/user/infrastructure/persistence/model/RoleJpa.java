@@ -15,7 +15,7 @@ public class RoleJpa {
 
     @Id
     @Column(name = "role_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer roleId;
 
     @Column(name = "role_name")

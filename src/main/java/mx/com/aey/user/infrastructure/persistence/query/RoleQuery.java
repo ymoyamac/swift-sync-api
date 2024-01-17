@@ -3,6 +3,7 @@ package mx.com.aey.user.infrastructure.persistence.query;
 public class RoleQuery {
 
     public static final String PARAM_USER_ID = "userId";
+    public static final String PARAM_ROLE_ID = "roleId";
 
     public static final String FIND_USER_ROLES_BY_USER_ID =
             "select usr02_roles.* from usr02_roles " +
@@ -11,4 +12,8 @@ public class RoleQuery {
             "inner join usr01_users " +
             "on usr03_roles_users.user_id = usr01_users.user_id " +
             "where usr01_users.user_id = :userId";
+
+    public static final String ASSIGN_ROLE_TO_USER =
+            "insert into usr03_roles_users (user_id, role_id)" +
+            "values (:userId, :roleId)";
 }

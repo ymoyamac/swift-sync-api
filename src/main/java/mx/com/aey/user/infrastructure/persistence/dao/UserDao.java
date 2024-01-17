@@ -63,18 +63,7 @@ public class UserDao implements UserRepository {
             Object[] result = (Object[]) entityManager.createNativeQuery(UserQuery.FIND_USER_BY_EMAIL)
                     .setParameter(UserQuery.PARAM_USER_EMAIL, userEmail)
                     .getSingleResult();
-            User user = User.builder()
-                    .userId((UUID) result[0])
-                    .firstName((String) result[1])
-                    .lastName((String) result[2])
-                    .nickName((String) result[3])
-                    .email((String) result[4])
-                    .backupEmail((String) result[5])
-                    .birthdate((Date) result[6])
-                    .phoneNumber((String) result[7])
-                    .isActive((Boolean) result[8])
-                    .build();
-            return Optional.of(user);
+            return getUser(result);
         } catch (NoResultException e) {
             return Optional.empty();
         }
@@ -102,8 +91,36 @@ public class UserDao implements UserRepository {
     }
 
     @Override
+    public Optional<User> findOneByNickName(String nickname) {
+        try {
+            Object[] result = (Object[]) entityManager.createNativeQuery(UserQuery.FIND_USER_BY_NICK_NAME)
+                    .setParameter(UserQuery.PARAM_USER_NICK_NAME, nickname)
+                    .getSingleResult();
+            return getUser(result);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public void delete(UUID userId) {
         userJpaRepository.deleteById(userId);
         userJpaRepository.flush();
+    }
+
+    private Optional<User> getUser(Object[] result) {
+        User user = User.builder()
+                .userId((UUID) result[0])
+                .firstName((String) result[1])
+                .lastName((String) result[2])
+                .nickName((String) result[3])
+                .email((String) result[4])
+                .backupEmail((String) result[5])
+                .password((String) result[6])
+                .birthdate((Date) result[7])
+                .phoneNumber((String) result[8])
+                .isActive((Boolean) result[9])
+                .build();
+        return Optional.of(user);
     }
 }
