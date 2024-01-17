@@ -10,7 +10,7 @@ public class UserQuery {
     public static  final String PARAM_USER_LIMIT = "limit";
     public static  final String PARAM_USER_OFFSET = "offset";
     public static final String PARAM_USER_EMAIL = "userEmail";
-    public static final String PARAM_USER_ID = "userId";
+    public static final String PARAM_USER_NICK_NAME = "nickName";
 
     public static final String USERS_PAGINATION =
             "select user_id, " +
@@ -34,11 +34,28 @@ public class UserQuery {
             "u_nick_name as nick_name, " +
             "u_email as email, " +
             "u_backup_email as backup_email, " +
+            "u_password as password, " +
             "u_birthdate as birthdate, " +
             "u_phone_number as phone_number, " +
             "u_is_active as is_active " +
             "from usr01_users " +
             "where u_email = :userEmail " +
+            "and u_is_active = true";
+
+    public static final String FIND_USER_BY_NICK_NAME =
+            "select " +
+            "user_id, " +
+            "u_first_name as first_name, " +
+            "u_last_name as last_name, " +
+            "u_nick_name as nick_name, " +
+            "u_email as email, " +
+            "u_backup_email as backup_email, " +
+            "u_password as password, " +
+            "u_birthdate as birthdate, " +
+            "u_phone_number as phone_number, " +
+            "u_is_active as is_active " +
+            "from usr01_users " +
+            "where u_nick_name = :nickName " +
             "and u_is_active = true";
 
 }

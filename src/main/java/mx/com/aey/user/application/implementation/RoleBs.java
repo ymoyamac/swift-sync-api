@@ -3,6 +3,7 @@ package mx.com.aey.user.application.implementation;
 import io.vavr.control.Either;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import mx.com.aey.user.domain.entity.Role;
 import mx.com.aey.user.domain.repository.RoleRepository;
 import mx.com.aey.user.domain.service.RoleService;
@@ -27,13 +28,14 @@ public class RoleBs implements RoleService {
     }
 
     @Override
-    public Either<ErrorCode, List<Role>> getRoles() {
+    public Either<ErrorCode, Set<Role>> getRoles() {
         return roleRepository.getRoles()
-                .<Either<ErrorCode, List<Role>>>map(Either::right)
+                .<Either<ErrorCode, Set<Role>>>map(Either::right)
                 .orElseGet(() -> Either.left(ErrorCode.ERROR));
     }
 
     @Override
+    @Transactional
     public Either<ErrorCode, Role> create(Role role) {
         var roleFound = roleRepository.getRoleById(role.getRoleId());
         if (roleFound.isPresent()) {
@@ -50,5 +52,21 @@ public class RoleBs implements RoleService {
         return roleRepository.getRoleById(roleId)
                 .<Either<ErrorCode, Role>>map(Either::right)
                 .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public Either<ErrorCode, Role> getRolesAssigned(UUID userId, Integer roleId) {
+        var roleFoundById = roleRepository.getRoleById(roleId);
+        if (roleFoundById.isEmpty()) {
+            return Either.left(ErrorCode.NOT_FOUND);
+        }
+        if (roleFoundById.get().getIsActive().equals(Boolean.FALSE)) {
+            return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+        }
+        var role = roleRepository.assignRoleToUser(userId, roleId);
+        return role
+                .<Either<ErrorCode, Role>>map(Either::right)
+                .orElseGet(() -> Either.left(ErrorCode.ERROR));
     }
 }

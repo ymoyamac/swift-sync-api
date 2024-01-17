@@ -17,4 +17,5 @@ public interface UserRepository {
     void delete(UUID userId);
     Optional<User> updateEmail(User user);
     void disable(User user);
+    Optional<User> findOneByNickName(String nickname);
 }

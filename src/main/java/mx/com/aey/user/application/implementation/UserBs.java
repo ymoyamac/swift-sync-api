@@ -85,13 +85,21 @@ public class UserBs implements UserService {
         Optional<User> userFound = userRepository.findOneByEmail(user.getEmail());
         if (userFound.isPresent()) {
             return Either.left(ErrorCode.UNIQUENESS_RULE);
-        } else {
-            var password = BcryptUtil.bcryptHash(user.getPassword());
-            user.setPassword(password);
-            user.setIsActive(Boolean.TRUE);
-            User userCreated = userRepository.save(user);
-            return Either.right(userCreated);
         }
+        Optional<User> userFoundByNick = userRepository.findOneByNickName(user.getNickName());
+        if (userFoundByNick.isPresent()) {
+            return Either.left(ErrorCode.UNIQUENESS_RULE);
+        }
+        var password = BcryptUtil.bcryptHash(user.getPassword());
+        user.setPassword(password);
+        user.setIsActive(Boolean.TRUE);
+        User userCreated = userRepository.save(user);
+        var roleAssigned = roleService.getRolesAssigned(userCreated.getUserId(), 2);
+        if (roleAssigned.isLeft()) {
+            return Either.left(roleAssigned.getLeft());
+        }
+        userCreated.setRoles(Set.of(roleAssigned.get()));
+        return Either.right(userCreated);
     }
 
     @Override
@@ -166,6 +174,20 @@ public class UserBs implements UserService {
         return Either.right(ResponseCode.DISABLE);
     }
 
+    @Override
+    public Either<ErrorCode, User> getUserByNickName(String nickName) {
+        return userRepository.findOneByNickName(nickName)
+                .<Either<ErrorCode, User>>map(user -> {
+                    if (user.getIsActive().equals(Boolean.FALSE)) {
+                        return Either.left(ErrorCode.RESOURCE_NOT_AVAILABLE);
+                    }
+                    var roles = roleService.getUserRolesByUserId(user.getUserId());
+                    user.setRoles(roles);
+                    return Either.right(user);
+                })
+                .orElseGet(() -> Either.left(ErrorCode.NOT_FOUND));
+    }
+
     private static User getUserEmailToUpdate(User userEmail, Optional<User> userFound) {
         if (userFound.isPresent()) {
             User user = userFound.get();
@@ -203,9 +225,13 @@ public class UserBs implements UserService {
         var userClass = user.getClass();
         var values = userClass.getDeclaredMethods();
         for (Method method : values) {
+            if (method.getName().equals("getRoles") || method.getName().equals("getIsActive")) {
+                continue;
+            }
             if (method.getName().startsWith("get") && !method.getName().equals("getUserId")) {
                 try {
                     Object value = method.invoke(user);
+                    System.out.println("name: " + method.getName() + " value: " + value);
                     if (value == "") {
                         return ErrorCode.NOT_BLANK_VALUE;
                     }

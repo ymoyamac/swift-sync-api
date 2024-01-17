@@ -10,6 +10,7 @@ import mx.com.aey.user.infrastructure.rest.dto.CreateRoleDto;
 import mx.com.aey.user.infrastructure.rest.dto.RoleDto;
 import mx.com.aey.util.error.ErrorMapper;
 
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,11 +32,12 @@ public class RoleController {
     @GET
     @Path("/user-roles/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserRolesByUserId(@PathParam("userId")UUID userId) {
-        return roleService.getUserRolesByUserId(userId)
-            .map(Response::ok)
-            .getOrElseGet(ErrorMapper::toResponse)
-            .build();
+    public Response getUserRolesByUserId(@PathParam("userId") UUID userId) {
+        var roles = roleService.getUserRolesByUserId(userId);
+        if (roles.isEmpty()) {
+            return Response.ok(new HashSet<>()).build();
+        }
+        return Response.ok(roles).status(Response.Status.OK).build();
     }
 
     @POST

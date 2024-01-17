@@ -46,12 +46,12 @@ public class RoleDao implements RoleRepository {
     }
 
     @Override
-    public Optional<List<Role>> getRoles() {
+    public Optional<Set<Role>> getRoles() {
         return Optional.of(
                 roleJpaRepository
                         .findAll()
                         .stream().map(RoleJpa::toEntity)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toSet())
         );
     }
 
@@ -63,5 +63,20 @@ public class RoleDao implements RoleRepository {
     @Override
     public Optional<Role> getRoleById(Integer roleId) {
         return roleJpaRepository.findById(roleId).map(RoleJpa::toEntity);
+    }
+
+    @Override
+    public Optional<Role> assignRoleToUser(UUID userId, Integer roleId) {
+        entityManager
+                .createNativeQuery(RoleQuery.ASSIGN_ROLE_TO_USER)
+                .setParameter(RoleQuery.PARAM_USER_ID, userId)
+                .setParameter(RoleQuery.PARAM_ROLE_ID, roleId)
+                .executeUpdate();
+        var rle = roleJpaRepository.findById(roleId);
+        if (rle.isPresent()) {
+            Role role = rle.get().toEntity();
+            return Optional.of(role);
+        }
+        return Optional.empty();
     }
 }
