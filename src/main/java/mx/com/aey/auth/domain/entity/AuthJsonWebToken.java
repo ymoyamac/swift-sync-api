@@ -16,26 +16,26 @@ import java.util.Set;
 public class AuthJsonWebToken {
 
     public static String generateToken(User user, Set<Role> roles, Long duration, String issuer) throws Exception {
-        String privateKeyLocation = "/privateKey.pem";
-        PrivateKey privateKey = readPrivateKey(privateKeyLocation);
+        PrivateKey privateKey = readPrivateKey();
         JwtClaimsBuilder claimsBuilder = Jwt.claims();
         long currentTimeInSecs = currentTimeInSecs();
         Set<String> groups = new HashSet<>();
-        for (Role role : roles) groups.add(role.toString());
+        for (Role role : roles) groups.add(role.getRoleName());
+
         claimsBuilder.issuer(issuer);
         claimsBuilder.subject(user.getNickName());
         claimsBuilder.upn(user.getFirstName());
         claimsBuilder.issuedAt(currentTimeInSecs);
         claimsBuilder.expiresAt(currentTimeInSecs + duration);
         claimsBuilder.groups(groups);
+
         return claimsBuilder
                 .jws()
-                .header("x-token", "x-value")
                 .sign(privateKey);
     }
 
-    private static PrivateKey readPrivateKey(final String pemResName) throws Exception {
-        try (InputStream contentIS = AuthJsonWebToken.class.getResourceAsStream(pemResName)) {
+    private static PrivateKey readPrivateKey() throws Exception {
+        try (InputStream contentIS = AuthJsonWebToken.class.getResourceAsStream("/privateKey.pem")) {
             byte[] tmp = new byte[4096];
             assert contentIS != null;
             int length = contentIS.read(tmp);

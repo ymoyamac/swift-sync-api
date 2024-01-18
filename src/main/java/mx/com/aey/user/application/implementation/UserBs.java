@@ -231,7 +231,6 @@ public class UserBs implements UserService {
             if (method.getName().startsWith("get") && !method.getName().equals("getUserId")) {
                 try {
                     Object value = method.invoke(user);
-                    System.out.println("name: " + method.getName() + " value: " + value);
                     if (value == "") {
                         return ErrorCode.NOT_BLANK_VALUE;
                     }

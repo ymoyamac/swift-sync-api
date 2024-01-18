@@ -15,13 +15,17 @@ import mx.com.aey.user.domain.service.UserService;
 import mx.com.aey.util.error.ErrorCode;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import java.util.Arrays;
+
 @ApplicationScoped
 public class AuthBs implements AuthService {
 
     @Inject
     UserService userService;
-    @ConfigProperty(name = "com.aey.quarkusjwt.jwt.duration") public Long duration;
-    @ConfigProperty(name = "mp.jwt.verify.issuer") public String issuer;
+    @ConfigProperty(name = "com.aey.quarkusjwt.jwt.duration")
+    Long duration;
+    @ConfigProperty(name = "mp.jwt.verify.issuer")
+    String issuer;
 
     @Override
     public Either<ErrorCode, AuthResponse> signIn(SignInDto signInDto) {
@@ -70,12 +74,12 @@ public class AuthBs implements AuthService {
                 .birthdate(user.getBirthdate())
                 .roles(user.getRoles())
                 .build();
-        var rolesName = user.getRoles();
+        var roles = user.getRoles();
         try {
-            String token = AuthJsonWebToken.generateToken(user, rolesName, duration, issuer);
+            String token = AuthJsonWebToken.generateToken(user, roles, duration, issuer);
             return Either.right(new AuthResponse(token, authUser));
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(Arrays.toString(e.getStackTrace()));
             return Either.left(ErrorCode.ERROR);
         }
     }
