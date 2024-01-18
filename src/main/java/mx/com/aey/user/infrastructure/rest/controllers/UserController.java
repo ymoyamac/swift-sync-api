@@ -1,5 +1,6 @@
 package mx.com.aey.user.infrastructure.rest.controllers;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -41,6 +42,7 @@ public class UserController {
             description = "Resource not found"
     )
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN_ROLE"})
     public Response getUsers(@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset) {
         return userService.getUsers(limit, offset)
                 .map(users -> Response.ok(users.stream().map(UserDto::fromEntity).collect(Collectors.toList())))
@@ -64,6 +66,7 @@ public class UserController {
             description = "Resource not found"
     )
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN_ROLE"})
     public Response getUserById(@PathParam("userId") UUID userId) {
         return userService.getUserById(userId)
                 .map(user -> Response.ok(UserDto.fromEntity(user)))
@@ -87,6 +90,7 @@ public class UserController {
             description = "Resource not found"
     )
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN_ROLE"})
     public Response getUserByEmail(@PathParam("userEmail") String userEmail) {
         return userService.getUserByEmail(userEmail)
                 .map(user -> Response.ok(UserDto.fromEntity(user)))
@@ -106,6 +110,7 @@ public class UserController {
     )
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN_ROLE"})
     public Response createUser(@Valid CreateUserDto createUserDto) {
         return userService.create(createUserDto.toEntity())
                 .map(user -> Response.ok(user).status(Response.Status.CREATED))
@@ -128,6 +133,7 @@ public class UserController {
             responseCode = "404",
             description = "Resource not found"
     )
+    @RolesAllowed({"GENERIC_ROLE", "ADMIN_ROLE"})
     public Response updateUser(
             @PathParam("userId") UUID userId,
             @Valid UpdateUserDto updateUserDto
@@ -153,6 +159,7 @@ public class UserController {
             responseCode = "404",
             description = "Resource not found"
     )
+    @RolesAllowed({"GENERIC_ROLE", "ADMIN_ROLE"})
     public Response updateEmail(
             @PathParam("userId") UUID userId,
             @Valid UpdateEmailDto updateEmailDto
@@ -178,6 +185,7 @@ public class UserController {
             responseCode = "404",
             description = "Resource not found"
     )
+    @RolesAllowed({"ADMIN_ROLE"})
     public Response disableUser(@PathParam("userId") UUID userId) {
         return userService.disableUser(userId)
                 .map(ResponseCodeMapper::toResponse)
@@ -200,6 +208,7 @@ public class UserController {
             responseCode = "404",
             description = "Resource not found"
     )
+    @RolesAllowed({"ADMIN_ROLE"})
     public Response deleteUser(@PathParam("userId") UUID userId) {
         return userService.delete(userId)
                 .map(ResponseCodeMapper::toResponse)
