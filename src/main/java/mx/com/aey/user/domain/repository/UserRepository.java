@@ -12,7 +12,7 @@ public interface UserRepository {
     List<User> findAll(Integer limit, Integer offset);
     Optional<User> findOneById(UUID userId);
     Optional<User> findOneByEmail(String userEmail);
-    User save(User user);
+    Optional<User> create(User user);
     Optional<User> update(User user);
     void delete(UUID userId);
     Optional<User> updateEmail(User user);
