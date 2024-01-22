@@ -4,10 +4,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import mx.com.aey.todo.domain.entity.Todo;
+import mx.com.aey.todo.domain.entity.TodoInteractionRole;
+import mx.com.aey.todo.domain.entity.TodoStatusRole;
 import mx.com.aey.todo.domain.repository.TodoRepository;
 import mx.com.aey.todo.infrastructure.persistence.TodoQuery;
+import mx.com.aey.todo.infrastructure.persistence.model.TodoInteractionRoleJpa;
 import mx.com.aey.todo.infrastructure.persistence.model.TodoJpa;
+import mx.com.aey.todo.infrastructure.persistence.model.TodoStatusRoleJpa;
+import mx.com.aey.todo.infrastructure.persistence.repository.TodoInteractionRoleJpaRepository;
 import mx.com.aey.todo.infrastructure.persistence.repository.TodoJpaRepository;
+import mx.com.aey.todo.infrastructure.persistence.repository.TodoStatusRoleJpaRepository;
 import mx.com.aey.user.domain.entity.User;
 
 import java.util.*;
@@ -16,6 +22,10 @@ import java.util.*;
 public class TodoDao implements TodoRepository {
     @Inject
     TodoJpaRepository todoJpaRepository;
+    @Inject
+    TodoInteractionRoleJpaRepository todoInteractionRoleJpaRepository;
+    @Inject
+    TodoStatusRoleJpaRepository todoStatusRoleJpaRepository;
     @Inject
     EntityManager entityManager;
 
@@ -37,6 +47,8 @@ public class TodoDao implements TodoRepository {
                             .updateAt((Date) todo[5])
                             .isActive((Boolean) todo[6])
                             .userId((UUID) todo[7])
+                            .todoInteractionRoleId((Integer) todo[8])
+                            .todoStatusRoleId((Integer) todo[9])
                             .build()
             ));
             return Optional.of(todos);
@@ -59,5 +71,23 @@ public class TodoDao implements TodoRepository {
     @Override
     public Optional<Todo> update(Todo todo) {
         return Optional.of(todoJpaRepository.saveAndFlush(TodoJpa.fromEntity(todo)).toEntity());
+    }
+
+    @Override
+    public Optional<TodoInteractionRole> getTodoInteractionRole(Integer id) {
+        return todoInteractionRoleJpaRepository.findById(id)
+                .map(TodoInteractionRoleJpa::toEntity);
+    }
+
+    @Override
+    public Optional<TodoStatusRole> getTodoStatusRole(Integer id) {
+        return todoStatusRoleJpaRepository.findById(id)
+                .map(TodoStatusRoleJpa::toEntity);
+    }
+
+    @Override
+    public void deleteTodo(UUID todoId) {
+        todoJpaRepository.deleteById(todoId);
+        todoJpaRepository.flush();
     }
 }

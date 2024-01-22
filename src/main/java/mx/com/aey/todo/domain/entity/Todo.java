@@ -19,4 +19,6 @@ public class Todo {
     private Date updateAt;
     private Boolean isActive;
     private UUID userId;
+    private Integer todoInteractionRoleId;
+    private Integer todoStatusRoleId;
 }

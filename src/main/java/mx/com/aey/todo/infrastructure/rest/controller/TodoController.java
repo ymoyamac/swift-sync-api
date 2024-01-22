@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import mx.com.aey.todo.domain.service.TodoService;
 import mx.com.aey.todo.infrastructure.rest.dto.CreateTodoDto;
+import mx.com.aey.todo.infrastructure.rest.dto.TodoDto;
 import mx.com.aey.todo.infrastructure.rest.dto.UpdateTodoDto;
 import mx.com.aey.util.error.ErrorMapper;
 
@@ -28,7 +29,7 @@ public class TodoController {
     @RolesAllowed({"GENERIC_ROLE"})
     public Response getTodoById(@PathParam("todoId") UUID todoId) {
         return todoService.getTodoById(todoId)
-                .map(Response::ok)
+                .map(todo -> Response.ok(TodoDto.fromEntity(todo)).status(Response.Status.OK))
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();
     }
@@ -55,7 +56,7 @@ public class TodoController {
     ) {
         UUID userId = UUID.fromString(securityContext.getUserPrincipal().getName());
         return todoService.create(userId, createTodoDto.toEntity())
-                .map(Response::ok)
+                .map(todo -> Response.ok(TodoDto.fromEntity(todo)).status(Response.Status.CREATED))
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();
     }
@@ -68,6 +69,16 @@ public class TodoController {
             @Valid UpdateTodoDto updateTodoDto
     ) {
         return todoService.update(todoId, updateTodoDto.toEntity())
+                .map(todo -> Response.ok(TodoDto.fromEntity(todo)).status(Response.Status.OK))
+                .getOrElseGet(ErrorMapper::toResponse)
+                .build();
+    }
+
+    @DELETE
+    @Path("/{todoId}")
+    @RolesAllowed({"GENERIC_ROLE"})
+    public Response updateTodo(@PathParam("todoId") UUID todoId) {
+        return todoService.deleteTodoById(todoId)
                 .map(Response::ok)
                 .getOrElseGet(ErrorMapper::toResponse)
                 .build();

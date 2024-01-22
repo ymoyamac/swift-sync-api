@@ -1,6 +1,8 @@
 package mx.com.aey.todo.domain.repository;
 
 import mx.com.aey.todo.domain.entity.Todo;
+import mx.com.aey.todo.domain.entity.TodoInteractionRole;
+import mx.com.aey.todo.domain.entity.TodoStatusRole;
 
 import java.util.Optional;
 import java.util.Set;
@@ -11,4 +13,7 @@ public interface TodoRepository {
     Optional<Todo> findOneById(UUID todoId);
     Optional<Todo> create(Todo todo);
     Optional<Todo> update(Todo todo);
+    Optional<TodoInteractionRole> getTodoInteractionRole(Integer id);
+    Optional<TodoStatusRole> getTodoStatusRole(Integer id);
+    void deleteTodo(UUID todoId);
 }

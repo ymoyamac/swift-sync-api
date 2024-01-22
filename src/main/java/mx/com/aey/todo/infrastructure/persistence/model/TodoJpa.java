@@ -43,8 +43,37 @@ public class TodoJpa {
     @Column(name = "t_user_id")
     private UUID userId;
 
+    @Column(name = "t_interaction_role_id")
+    private Integer todoInteractionRoleId;
+
+    @Column(name = "t_status_role_id")
+    private Integer todoStatusRoleId;
+
+    @OneToOne
+    @JoinColumn(
+            name = "t_interaction_role_id",
+            referencedColumnName = "interaction_role_id",
+            insertable = false,
+            updatable = false
+    )
+    private TodoInteractionRoleJpa todoInteractionRole;
+
+    @OneToOne
+    @JoinColumn(
+            name = "t_status_role_id",
+            referencedColumnName = "status_role_id",
+            insertable = false,
+            updatable = false
+    )
+    private TodoStatusRoleJpa todoStatusRole;
+
     @ManyToOne
-    @JoinColumn(name = "t_user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JoinColumn(
+            name = "t_user_id",
+            referencedColumnName = "user_id",
+            insertable = false,
+            updatable = false
+    )
     private UserJpa user;
 
     public static TodoJpa fromEntity(Todo entity) {
@@ -57,6 +86,8 @@ public class TodoJpa {
                 .updateAt(entity.getUpdateAt())
                 .isActive(entity.getIsActive())
                 .userId(entity.getUserId())
+                .todoInteractionRoleId(entity.getTodoInteractionRoleId())
+                .todoStatusRoleId(entity.getTodoStatusRoleId())
                 .build();
     }
 
@@ -70,6 +101,8 @@ public class TodoJpa {
                 .updateAt(updateAt)
                 .isActive(isActive)
                 .userId(userId)
+                .todoStatusRoleId(todoStatusRoleId)
+                .todoInteractionRoleId(todoInteractionRoleId)
                 .build();
     }
 }
