@@ -22,7 +22,7 @@ public class UserJpa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id", unique = true)
+    @Column(name = "user_id")
     private UUID userId;
 
     @Column(name = "u_first_name")
@@ -34,7 +34,7 @@ public class UserJpa {
     @Column(name = "u_nick_name")
     private String nickName;
 
-    @Column(name = "u_email", unique = true)
+    @Column(name = "u_email")
     private String email;
 
     @Column(name = "u_backup_email")

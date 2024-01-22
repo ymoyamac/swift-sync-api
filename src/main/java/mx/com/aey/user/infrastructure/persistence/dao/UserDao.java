@@ -70,8 +70,8 @@ public class UserDao implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
-        return userJpaRepository.save(UserJpa.fromEntity(user)).toEntity();
+    public Optional<User> create(User user) {
+        return Optional.of(userJpaRepository.save(UserJpa.fromEntity(user)).toEntity());
     }
 
     @Override

@@ -48,7 +48,7 @@ public class CreateUserDto {
     private String email;
 
     @JsonProperty
-    @Schema(required = true)
+    @Schema(nullable = true)
     @Email
     private String backupEmail;
 

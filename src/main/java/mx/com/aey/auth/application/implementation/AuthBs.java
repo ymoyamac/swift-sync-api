@@ -33,8 +33,6 @@ public class AuthBs implements AuthService {
         if (userFound.isRight()) {
             User user = userFound.get();
             String password = user.getPassword();
-            System.out.println(user.getEmail());
-            System.out.println(password);
             Boolean isAuthorized = BcryptUtil.matches(signInDto.getPassword(), password);
             if (isAuthorized.equals(Boolean.FALSE)) {
                 return Either.left(ErrorCode.UNAUTHORIZED);

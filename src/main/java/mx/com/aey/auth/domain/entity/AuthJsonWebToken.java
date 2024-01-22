@@ -24,7 +24,7 @@ public class AuthJsonWebToken {
 
         claimsBuilder.issuer(issuer);
         claimsBuilder.subject(user.getNickName());
-        claimsBuilder.upn(user.getFirstName());
+        claimsBuilder.upn(user.getUserId().toString());
         claimsBuilder.issuedAt(currentTimeInSecs);
         claimsBuilder.expiresAt(currentTimeInSecs + duration);
         claimsBuilder.groups(groups);

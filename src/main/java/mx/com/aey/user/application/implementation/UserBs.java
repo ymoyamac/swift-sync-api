@@ -93,13 +93,17 @@ public class UserBs implements UserService {
         var password = BcryptUtil.bcryptHash(user.getPassword());
         user.setPassword(password);
         user.setIsActive(Boolean.TRUE);
-        User userCreated = userRepository.save(user);
-        var roleAssigned = roleService.getRolesAssigned(userCreated.getUserId(), 2);
+        Optional<User> userCreated = userRepository.create(user);
+        if (userCreated.isEmpty()) {
+            return Either.left(ErrorCode.ERROR_TO_CREATE);
+        }
+        User newUser = userCreated.get();
+        var roleAssigned = roleService.getRolesAssigned(newUser.getUserId(), 2);
         if (roleAssigned.isLeft()) {
             return Either.left(roleAssigned.getLeft());
         }
-        userCreated.setRoles(Set.of(roleAssigned.get()));
-        return Either.right(userCreated);
+        newUser.setRoles(Set.of(roleAssigned.get()));
+        return Either.right(newUser);
     }
 
     @Override

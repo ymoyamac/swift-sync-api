@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
     ERROR(500, "Oops... Something went wrong, check server logs"),
+    ERROR_TO_CREATE(500, "Oops... Something went wrong, resource could not be created"),
     BAD_REQUEST(400, "Invalid request format. Please check the request body"),
     UNIQUENESS_RULE(400, "Insertion error. This element already exists"),
     NOT_NULL_VALUE(400, "Value cannot be null. Please provide a valid value for the required field"),
